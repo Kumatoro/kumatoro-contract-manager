@@ -121,8 +121,6 @@ We welcome contributions to the Girasol CLI! Please feel free to submit issues a
 
 Create a `.env` file in the project root with the following variables:
 ```bash
-# Required environment variables
-# Add your specific configuration requirements here
+# Check the .env.example
 ```
-
 
