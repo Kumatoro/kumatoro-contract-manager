@@ -6,6 +6,8 @@ import {initializeProgram} from "./commands/initialize.js";
 
 import {createDialectSdk} from "./commands/createDialectSdk"
 import {createDialectNotification} from "./commands/createDialectNotification";
+import {reallocRoundAccount} from "./commands/realloc_round_account";
+import {closeRoundAccount} from "./commands/close_round_account";
 
 
 
@@ -19,7 +21,7 @@ program
 })
 
 program
-    .command('initialize-program')
+    .command('create-market')
     .argument('<price_feed_sol_usd_account>', "SOL/USD price account")
     .argument('<price_feed_id>', "Market pyth price feed")
     .argument('<round_duration>', "Round durantion in seconds 300 = 5min")
@@ -34,8 +36,26 @@ program
         await createMarket(priceFeedSolUsdAccount, priceFeedId, roundDuration, minTopUp,  maxTopUp, marketTicker, flatRange, marketFee, marketFeeCollectorAccount)
     })
 
+program
+    .command('realloc-round-account')
+    .description('Realloc/Resize round account to increase data')
+    .argument('<round_pda>', 'Round to increase account address')
+    .argument('<market_pda>', 'Market account address')
+    .action(async (roundPda, marketPda) =>{
+        await reallocRoundAccount(roundPda, marketPda)
+    })
 
-
+program
+    .command('close-round-account')
+    .description('Close round account and refund to treasury')
+    .argument('<market_pda>', 'Market account address')
+    .argument('<force>', 'Force the closing account')
+    .argument('<round_pda>', 'Round id')
+    .action(async (marketPda, force, roundPda) =>{
+        // Convert force argument to a boolean
+        const isForce = force.toLowerCase() === 'true';
+        await closeRoundAccount(marketPda, isForce, roundPda)
+    })
 
 program
     .command('create-dialect-sdk')

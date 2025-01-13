@@ -20,7 +20,6 @@ const createMarket = async (price_feed_sol_usd_account: string, price_feed_id: s
 
     const globalData = await program.account.globalData.fetch(global_pda);
 
-
     const [market_pda, market_bump] = anchor.web3.PublicKey.findProgramAddressSync(
         [Buffer.from('kumatoro'), Buffer.from('market'), globalData.marketCounter.toBuffer('le', 8),],
         program.programId

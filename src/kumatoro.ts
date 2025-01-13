@@ -123,6 +123,149 @@ export type Kumatoro = {
       "args": []
     },
     {
+      "name": "closeRound",
+      "discriminator": [
+        149,
+        14,
+        81,
+        88,
+        230,
+        226,
+        234,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "roundPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  107,
+                  117,
+                  109,
+                  97,
+                  116,
+                  111,
+                  114,
+                  111
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  111,
+                  117,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "marketPda"
+              },
+              {
+                "kind": "account",
+                "path": "round_pda.round_seed_id",
+                "account": "roundData"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  107,
+                  117,
+                  109,
+                  97,
+                  116,
+                  111,
+                  114,
+                  111
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market_pda.market_seed_id",
+                "account": "marketData"
+              }
+            ]
+          }
+        },
+        {
+          "name": "rentReceiverAccount",
+          "writable": true
+        },
+        {
+          "name": "globalPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  107,
+                  117,
+                  109,
+                  97,
+                  116,
+                  111,
+                  114,
+                  111
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "force",
+          "type": "bool"
+        }
+      ]
+    },
+    {
       "name": "createMarket",
       "discriminator": [
         103,
@@ -720,6 +863,108 @@ export type Kumatoro = {
       ]
     },
     {
+      "name": "reallocRound",
+      "discriminator": [
+        244,
+        132,
+        153,
+        73,
+        166,
+        229,
+        198,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "roundPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  107,
+                  117,
+                  109,
+                  97,
+                  116,
+                  111,
+                  114,
+                  111
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  111,
+                  117,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "marketPda"
+              },
+              {
+                "kind": "account",
+                "path": "round_pda.round_seed_id",
+                "account": "roundData"
+              }
+            ]
+          }
+        },
+        {
+          "name": "marketPda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  107,
+                  117,
+                  109,
+                  97,
+                  116,
+                  111,
+                  114,
+                  111
+                ]
+              },
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  114,
+                  107,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market_pda.market_seed_id",
+                "account": "marketData"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "resolveMarketRound",
       "discriminator": [
         174,
@@ -1285,6 +1530,16 @@ export type Kumatoro = {
       "code": 6019,
       "name": "wrongProtocolCollectorAccountProvided",
       "msg": "Wrong protocol collector account provided"
+    },
+    {
+      "code": 6020,
+      "name": "allPlayersNotResolvedYet",
+      "msg": "All players must resolve their rounds before proceeding"
+    },
+    {
+      "code": 6021,
+      "name": "wrongRentAccountProvided",
+      "msg": "Wrong rent account provided"
     }
   ],
   "types": [
@@ -1329,7 +1584,7 @@ export type Kumatoro = {
           {
             "name": "protocolFee",
             "docs": [
-              "Fee the protocol is taking from markets (e.g., 50 = 0.5%, 500 = 5%)"
+              "Base points Fee the protocol is taking from markets (e.g., 20 = 2%)"
             ],
             "type": "u16"
           },
@@ -1851,6 +2106,22 @@ export type Kumatoro = {
               "Check if an account is initialized"
             ],
             "type": "bool"
+          },
+          {
+            "name": "playerTotalCollected",
+            "docs": [
+              "Player resolved/collected amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "creator",
+            "docs": [
+              "Round creator to receive the rent on close"
+            ],
+            "type": {
+              "option": "pubkey"
+            }
           }
         ]
       }
